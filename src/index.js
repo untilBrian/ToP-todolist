@@ -1,20 +1,19 @@
 import testAppController from './test.js';
+import App from './app.js';
 
-class ScreenController {
-    constructor() {
-        this.screen = document.getElementById('screen');
-    }
-}
+const app = new App();
+    //main page
+        //UI - folders show up
+        //FX - navigate to folders (and back)
 
-testAppController();
+    //folder page
+        //UI - to-dos show up (minimal format)
+        //FX - create to-dos WITH FORM (and delete)
+        //FX - click to-do to open full version
+        //FX - edit to-do (with form), only AFTER opening to-do
 
-
-//requirements 
-    //project object - 
-        //X start with default project
-        //X method - switch between projects
-        //X method - view all projects
-    //to-do object - 
-        // X properties - title; description; dueDate; priority; notes; checklist
-        // X methods - add; delete; view properties; 
-            // X method - edit (with just typing & enter)
+    //to-do page
+        //create to do
+        //UI - to-do in full
+        //FX - edit to-do (with form), only AFTER opening to-do
+        //FX - delete to-do

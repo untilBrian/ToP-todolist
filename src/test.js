@@ -1,4 +1,4 @@
-import AppController from './appController.js';
+import AppController from './app.js';
 
 function testAppController() {
     const app = new AppController();
