@@ -29,14 +29,14 @@ function showEditForm(toDo, toDoDOM) {
             priority: editForm.elements['priority'].value,
             notes: editForm.elements['notes'].value,
         };
-        closeModal(modal);
+        modal.remove();
         toDoController.editPropertiesControl(toDo, toDoDOM, formValues);
 
     });
 
     // Create event listener for cancel button
     document.querySelector('#cancel').addEventListener('click', () => {
-        closeModal(modal);    
+        modal.remove();
     });
 
 }

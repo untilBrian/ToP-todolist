@@ -1,3 +1,7 @@
+import showNewForm from './showNewForm.js';
+import { ToDo } from './todoClasses.js';
+import { ToDoDOM } from './todoClasses.js';
+
 class Project {
     constructor(projectName) {
         this.name = projectName;
@@ -7,7 +11,15 @@ class Project {
 
     // Create new ToDo
     createToDo(formValues) {
-        const toDo = new ToDo(formValues);
+        const toDo = new ToDo(
+            formValues.title,
+            formValues.description,
+            formValues.dueDate,
+            formValues.priority,
+            formValues.notes,
+            formValues.checklist
+        );
+
         toDo.project = this;
         this.projectList.push(toDo);
 
@@ -35,14 +47,14 @@ class ProjectDOM {
         projectDOM.classList.add('project');
         this.projectDOM = projectDOM;
 
-        //append ToDoDOMs to the project DOM
-        this.projectDOMList.forEach(toDoDOM => {
-            projectDOM.appendChild(toDoDOM);
-        });
+        const title = document.createElement('h1');
+        title.textContent = this.project.name;
+        this.projectTitle = title;
+        this.projectDOM.appendChild(this.projectTitle);
 
         //event listener to open the project
-        this.projectDOM.addEventListener('click', () => {
-            this.displayProject()
+        this.projectTitle.addEventListener('click', () => {
+            this.displayProject();
         });
 
         //create home button
@@ -50,11 +62,8 @@ class ProjectDOM {
         homeButton.classList.add('homeButton');
         homeButton.textContent = 'Return Home';
         this.homeButton = homeButton;
-        this.projectDOM.appendChild(this.homeButton);
-
-        //event listener to return home
         this.homeButton.addEventListener('click', () => {
-            app.renderHome();
+            appDOM.renderHome();
         });
 
         //create new ToDo button
@@ -62,26 +71,15 @@ class ProjectDOM {
         newToDoButton.classList.add('newButton');
         newToDoButton.textContent = 'New ToDo';
         this.newToDoButton = newToDoButton;
-        this.projectDOM.appendChild(this.newToDoButton);
         this.newToDoButton.addEventListener('click', () => {
-            showNewForm(this.project, this.projectDOM);
+            showNewForm(this.project);
         });
     }
 
     createToDoDOM(toDo) {
-        const toDoDOM = document.createElement('div');
-        toDoDOM.classList.add('toDo');
-
-        const properties = ['title', 'description', 'dueDate', 'priority', 'notes'];
-        properties.forEach(prop => {
-            const element = document.createElement(prop === 'title' ? 'h1' : prop === 'description' ? 'h2' : 'p');
-            element.textContent = toDo[prop];
-            element.id = prop;
-            this.toDoDOM.appendChild(element);
-        });
-
+        const toDoDOM = new ToDoDOM(toDo);
         this.projectDOMList.push(toDoDOM);
-        this.projectDOM.appendChild(toDoDOM);
+        this.projectDOM.appendChild(toDoDOM.toDoDOM);
     }
 
     deleteToDoDOM(toDoDOM) {
@@ -90,10 +88,10 @@ class ProjectDOM {
     }
 
     displayProject() {
-        appDOM.innerHTML = '';
-        appDOM.appendChild(this.projectDOM);
-        appDOM.appendChild(this.newToDoButton);
-        appDOM.appendChild(this.homeButton);
+        appDOM.appDOM.innerHTML = '';
+        appDOM.appDOM.appendChild(this.projectDOM);
+        appDOM.appDOM.appendChild(this.newToDoButton);
+        appDOM.appDOM.appendChild(this.homeButton); 
     }
 }
 
@@ -102,7 +100,8 @@ class ProjectController {
     }
 
     createToDoControl(project, formValues) {
-        const toDo = project.createToDo(...formValues);
+        const toDo = project.createToDo(formValues);
+        toDo.project = project;
         project.projectDOM.createToDoDOM(toDo);
     }
 

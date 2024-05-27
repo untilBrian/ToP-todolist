@@ -1,4 +1,4 @@
-import { ToDo, ToDoDOM, ToDoController } from './todoClasses.js';
+import './styles.css';
 
 function showNewForm(project) {
     // Create edit form
@@ -20,22 +20,24 @@ function showNewForm(project) {
     document.body.appendChild(modal);
 
     // Create event listener for form submission
-    editForm.addEventListener('submit', (event) => {
+    newForm.addEventListener('submit', (event) => {
+        console.log("Before preventDefault");
         event.preventDefault();
+        console.log("After preventDefault");
         const formValues = {
-            title: editForm.elements['title'].value,
-            description: editForm.elements['description'].value,
-            dueDate: editForm.elements['dueDate'].value,
-            priority: editForm.elements['priority'].value,
-            notes: editForm.elements['notes'].value,
+            title: newForm.elements['title'].value,
+            description: newForm.elements['description'].value,
+            dueDate: newForm.elements['dueDate'].value,
+            priority: newForm.elements['priority'].value,
+            notes: newForm.elements['notes'].value,
         };
-        closeModal(modal);
+        modal.remove();
         projectController.createToDoControl(project, formValues);
     });
 
     // Create event listener for cancel button
     document.querySelector('#cancel').addEventListener('click', () => {
-        closeModal(modal);    
+        modal.remove();
     });
 }
 

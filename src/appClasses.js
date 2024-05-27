@@ -42,12 +42,9 @@ class AppDOM {
             if (projectName) {
                 appController.createProjectController(projectName);
                 this.newProjectInput.value = '';
+                this.renderHome();
             }
         });
-
-        //append
-        this.app.appendChild(this.newProjectButton);
-        this.app.appendChild(this.newProjectInput);
     }
 
     createProjectDOM(project) {
@@ -56,14 +53,17 @@ class AppDOM {
     }
 
     renderHome() {
+        document.body.innerHTML = '';
         this.appDOM.innerHTML = '';
         this.appDOM.appendChild(this.newProjectInput);
         this.appDOM.appendChild(this.newProjectButton);
-        this.appDOMList.forEach(projectDOM => {
-            this.appDOM.appendChild(projectDOM.projectDOM);
+        
+        Object.values(this.appDOMList).forEach(projectDOM => {
+            this.appDOM.appendChild(projectDOM.projectTitle);
         });
-    }
 
+        document.body.appendChild(this.appDOM);
+    }
 }
 
 class AppController {

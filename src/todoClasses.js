@@ -1,13 +1,13 @@
-import { generateUniqueID } from './uniqueID.js';
+import showEditForm from './showEditForm.js';
+import { Project, ProjectDOM, ProjectController } from './projectClasses.js';
 
 class ToDo {
-    constructor(title = 'Untitled', description = '', dueDate = null, priority = null, notes = '', checklist = []) {
+    constructor(title = 'Untitled', description = '', dueDate = null, priority = null, notes = '') {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
         this.notes = notes;
-        this.checklist = checklist;
 
         this.project = null;
         this.toDoDOM = null;
@@ -25,14 +25,16 @@ class ToDoDOM {
         this.toDo.toDoDOM = this;
         this.toDoDOM = document.createElement('div');
         this.toDoDOM.classList.add('todo');
+        this.projectDOM = toDo.project.projectDOM.projectDOM;
 
         //add event listener
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
         editButton.id = 'editButton';
         editButton.addEventListener('click', () => {
-            showEditForm(this.toDo, this.toDoDOM, toDoController);
+            showEditForm(this.toDo, this, toDoController);
         });
+        this.editButton = editButton;
 
         //add delete button
         const deleteButton = document.createElement('button');
@@ -41,27 +43,28 @@ class ToDoDOM {
         deleteButton.addEventListener('click', () => {
             projectController.deleteToDoControl(this.toDo.project, this.toDo, this.toDoDOM);
         });
+        this.deleteButton = deleteButton;
 
         //add show full to-do
         const showFullButton = document.createElement('button');
         showFullButton.textContent = 'Show Full To-Do';
         showFullButton.id = 'showFullButton';
-        showFullToDoButton.addEventListener('click', () => {
+        showFullButton.addEventListener('click', () => {
             this.showFullToDo();
         });
+        this.showFullButton = showFullButton;
 
         //add show less button
         const showLessButton = document.createElement('button');
         showLessButton.textContent = 'Show Less';
         showLessButton.id = 'showLessButton';
         showLessButton.addEventListener('click', () => {
-            this.showLess();
+            this.showLessToDo();
         });
+        this.showLessButton = showLessButton;
 
-        //append buttons
-        this.toDoDOM.appendChild(editButton);
-        this.toDoDOM.appendChild(showFullButton);
-        this.toDoDOM.appendChild(showLessButton);
+        this.editProperties(); //render to-do properties in toDoDOM
+        this.showLessToDo(); //show less button
     }
 
     editProperties () {
@@ -79,20 +82,22 @@ class ToDoDOM {
     showFullToDo () {
         this.toDoDOM.innerHTML = '';
         this.editProperties();
+
+        this.toDoDOM.appendChild(this.showLessButton);
+        this.toDoDOM.appendChild(this.editButton);
+        this.toDoDOM.appendChild(this.deleteButton);
     }
 
     showLessToDo () {
         const children = Array.from(this.toDoDOM.children);
         children.forEach(child => {
-            if (child.tagName.toLowerCase() === 'p') {
+            if (child.tagName.toLowerCase() === 'p' || child.id === 'showLessButton' || child.id === 'editButton' || child.id === 'deleteButton') {
                 this.toDoDOM.removeChild(child);
             }
         });
+        this.projectDOM.appendChild(this.toDoDOM);        
+        this.toDoDOM.appendChild(this.showFullButton);
     }
-
-    renderToDoDOM () {
-    //append to-do Div to project List
-    } 
 }
 
 class ToDoController {
@@ -100,18 +105,14 @@ class ToDoController {
     }
 
     editPropertiesControl (toDo, toDoDOM, formValues) {
-        
-        formValues.forEach((formValue) => {
-            const { property, value } = formValue;
+        Object.entries(formValues).forEach(([property, value]) => {
             toDo.editProperty(property, value);
         });
 
         toDoDOM.editProperties();
+        toDoDOM.showLessToDo();
+        toDoDOM.toDoDOM.appendChild(toDoDOM.showFullButton);
     }
 }
 
 export { ToDo, ToDoDOM, ToDoController };
-
-//create toDo
-//pass info from form into controller
-//controller creates toDo object/etc
